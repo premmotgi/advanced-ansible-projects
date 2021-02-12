@@ -7,48 +7,34 @@
     tasks:
       - name: Install all required dependencies
         apt: #name={{item}} state=installed
-          name: [ 'python', 'python-setuptools', 'python-dev', 'build-essential', 'python3-pip', 'python-apt']
+          name: [ 'python', 'python-setuptools', 'python-dev', 'build-essential', 'python-pip', 'python-apt', 'python-mysqldb', 'python3-pip', 'python3-setuptools']
           state: present
-#        with_items:
-#          - python
-#          - python-setuptools
-#          - python-dev
-#          - build-essential
-#          - python-pip
-#          - python-mysqldb
-#
-#      - name: install python-is-python3
-#        apt: name=python-is-python3 update_cache=yes state=present
-#
-#      - name: creating alias
-#        shell: echo alias pip=pip3 >> ~/.bashrc
-#
-#      - name: test and upgrade pip
-#        pip: name=pip state=latest
-#        tags:
-#          - packages
-
-
-      - name: Install the MySQL-python through pip
-        pip:
-          name: ['pip' , 'MySQL-python' ]
-          state: forcereinstall
 
 
       - name: Install MySQL database
-        apt: name={{item}} state=installed
+        apt: name={{item}} state=present
         with_items:
           - mysql-server
           - mysql-client
 
-      - name: Start the database service
-        service:
-          name: mysql
-          state: started
-          enabled: yes
+#for some reason, this didnot work well, need to retest to check if we need this or not
+#      - name: Start the database service
+#        service:
+#          name: mysql
+#          state: started
+#          enabled: yes
+
+      - name: "Start DB Sevice"
+        shell: service mysql start
+        become: yes
 
       - name: Create Application Database
-        mysql_db: name=employee_db state=present
+        mysql_db: #name=employee_db state=present login_unix_socket=/var/run/mysqld/mysqld.sock
+          name: employee_db
+          state: present
+          #added below line to avoid login issues when running scripts multiple times
+          login_unix_socket: /var/run/mysqld/mysqld.sock
+        become: yes
 
 
       - name: Create Database User
@@ -57,6 +43,14 @@
           password: Passw0rd
           priv: '*.*:ALL'
           state: present
+          #added below line to avoid login issues when running scripts multiple times
+          login_unix_socket: /var/run/mysqld/mysqld.sock
+        become: yes
+
+      #since there could be issue with linux vs pip versions, its always safer to upgrade pip to latest version avlbl for OS
+      - name: Update pip
+        command: pip install --upgrade pip
+
 
       - name: Install Python flask dependency
         pip:
@@ -66,6 +60,14 @@
           - flask
           - flask-mysql
 
-#nohup & for running the app in background, Also, should have the py file in the same folder.
+      - name: Copy source code
+        copy: src=app.py dest=/opt/app.py
+
+
+      #nohup & for running the app in background, Also, should have the py file in the same folder.
       - name: Start Web Server
-        shell: FLASK_APP=app.py nohup flask run --host 0.0.0.0 &
+        #we have to store this in opt, since ansible deduces it for execution or else it will not be able to access in any other folder.[for trial, try using ./app.py]
+        shell: FLASK_APP=/opt/app.py nohup flask run --host 0.0.0.0 &
+
+
+        #to check if its working run: sudo lsof -t -i:5000, if it outputs a number then its fine!
