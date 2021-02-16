@@ -1,0 +1,17 @@
+#In yaml, space is needed with colons
+ansible_host: 127.0.0.1
+ansible_ssh_pass: prem
+
+
+
+#db vars can also be moved here
+db_name: employee_db
+db_user: db_user
+db_password: Passw0rd
+
+#Prior to removing from the ansible file, it would look like:
+#  db_and_web_server1 ansible_host=127.0.0.1 ansible_ssh_pass=prem
+# just keep the db_and_web_server1 in inventory
+# create the same file with name db_and_web_server1.yml and move the host and ssh props in the other file
+#make sure you have colon and space with it.
+

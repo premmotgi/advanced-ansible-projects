@@ -1,0 +1,22 @@
+#This file should work with centOS but might give some errors on ubuntu for pip
+-
+  name: Deploy a web application
+  hosts: db_and_web_server
+  tasks:
+
+    - name: Install dependencies
+      apt: name={{ item }} state=present
+      with_items:
+        - python
+        - python-setuptools
+        - python-dev
+        - build-essential
+        - python-pip
+        - python-mysqldb
+
+    - name: set up database from deploy_db file
+      include: tasks/deploy_db.yml
+
+    - name: set up dweb server from deploy_web file
+      include: tasks/deploy_web.yml
+
