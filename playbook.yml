@@ -60,7 +60,8 @@
           - flask
           - flask-mysql
 
-
+      - name: Copy source code
+        copy: src=app.py dest=/opt/app.py
 
 
       #nohup & for running the app in background, Also, should have the py file in the same folder.

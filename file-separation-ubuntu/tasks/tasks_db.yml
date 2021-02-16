@@ -1,0 +1,36 @@
+#folder name should be tasks, and syntax inside can be spaced or non-spaced from left
+      - name: Install MySQL database
+        apt: name={{item}} state=present
+        with_items:
+          - mysql-server
+          - mysql-client
+
+#for some reason, this didnot work well, need to retest to check if we need this or not
+#      - name: Start the database service
+#        service:
+#          name: mysql
+#          state: started
+#          enabled: yes
+
+      - name: "Start DB Sevice"
+        shell: service mysql start
+        become: yes
+
+      - name: Create Application Database
+        mysql_db: #name=employee_db state=present login_unix_socket=/var/run/mysqld/mysqld.sock
+          name: employee_db
+          state: present
+          #added below line to avoid login issues when running scripts multiple times
+          login_unix_socket: /var/run/mysqld/mysqld.sock
+        become: yes
+
+
+      - name: Create Database User
+        mysql_user:
+          name: db_user
+          password: Passw0rd
+          priv: '*.*:ALL'
+          state: present
+          #added below line to avoid login issues when running scripts multiple times
+          login_unix_socket: /var/run/mysqld/mysqld.sock
+        become: yes

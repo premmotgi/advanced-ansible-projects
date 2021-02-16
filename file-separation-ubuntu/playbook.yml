@@ -1,0 +1,18 @@
+---
+  - name: Deploy a web application
+    hosts: db_and_web_server1
+    become: yes
+    become_method: sudo
+
+    tasks:
+      - name: Install all required dependencies
+        apt: #name={{item}} state=installed
+          name: [ 'python', 'python-setuptools', 'python-dev', 'build-essential', 'python-pip', 'python-apt', 'python-mysqldb', 'python3-pip', 'python3-setuptools']
+          state: present
+
+      - name: setup database from tasks_db
+        include: tasks/tasks_db.yml
+
+      - name: setup web from tasks_web
+        include: tasks/tasks_web.yml
+

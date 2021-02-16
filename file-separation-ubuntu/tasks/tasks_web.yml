@@ -1,0 +1,24 @@
+#since there could be issue with linux vs pip versions, its always safer to upgrade pip to latest version avlbl for OS
+- name: Update pip
+  command: pip install --upgrade pip
+
+
+- name: Install Python flask dependency
+  pip:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - flask
+    - flask-mysql
+
+#donot miss to copy the file to opt since ansible has to deduce this location
+- name: Copy source code
+  copy: src=app.py dest=/opt/app.py
+
+#nohup & for running the app in background, Also, should have the py file in the same folder.
+- name: Start Web Server
+  #we have to store this in opt, since ansible deduces it for execution or else it will not be able to access in any other folder.[for trial, try using ./app.py]
+  shell: FLASK_APP=/opt/app.py nohup flask run --host 0.0.0.0 &
+
+
+  #to check if its working run: sudo lsof -t -i:5000, if it outputs a number then its fine!
