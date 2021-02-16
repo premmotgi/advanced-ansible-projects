@@ -1,0 +1,47 @@
+-
+  name: Deploy a mysql DB
+  hosts: db_server
+  roles:
+    - python
+    - mysql_db
+
+-
+  name: Deploy a Web Server
+  hosts: web_server
+  roles:
+    - python
+    - flask_web
+
+-
+  name: Monitor Web Application for 6 Minutes
+  hosts: web_server
+  command: /opt/monitor_webapp.py
+  register: webapp_result
+  async: 360
+  poll: 0
+
+-
+  name: Monitor Database for 6 Minutes
+  hosts: db_server
+  command: /opt/monitor_database.py
+  register: database_result
+  async: 360
+  poll: 0
+
+#Below portion of async_status would execute only if ansible module supports the async_status.
+#comment if you face errors
+#TODO: convert below code to array of async_status tasks.
+-
+  name: check the status
+  async_status: jid={{ webapp_result.ansible_job_id }}
+  register: job_result
+  until: job_result.finished
+  retries: 30
+
+-
+  name: check the status
+  async_status: jid={{ database_result.ansible_job_id }}
+  register: job_result
+  until: job_result.finished
+  retries: 30
+

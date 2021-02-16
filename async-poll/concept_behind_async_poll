@@ -1,0 +1,13 @@
+1. Basically when you have multiple scripts running from your playbook, ansible runs each task and waits till the task finishes
+and then moves to the next task.
+2. But, this would take alot of time
+3. This would also make it synchronous
+4. To make it little asynchronous in terms of execution to save some time for playbook execution async can be used.
+5. With async ansible knows for how much time we have to execute the script. After this specified time ansible moves to next task.
+6. Now if we want the script to move immediately after this time, we have to use poll. So that ansible keeps on checking the status again.
+7. when you use poll, default time is 10 seconds to check for ansible. that is after every 10 secs it will check if async operation is finished
+8. Also, if we set value of poll to 0, it will achieve more or less paralell execution  for tasks.
+9. Usually you can save status of tasks in a variable and set polling to 0 for all the tasks. Then, you can keep checking status
+every while to see if script execution is finished. in short, setting polling value to zero means ansible wont do polling for it and instead will
+move to next task.
+

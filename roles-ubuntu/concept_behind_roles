@@ -1,0 +1,8 @@
+Ansible roles:
+
+ansible roles in short manifests a template for standart ansible folder structure.
+It has all the stuff that we need for creating an ansible module. Its like creating a docker image and storing it in docker hub.
+In the same way, you create an ansible template/role and push it to ansible-galaxy.
+
+Next time, when someone else want to install/configure something, they can look for that in ansible-galaxy and update it as per need.
+or upload your own version on ansible-galaxy.
