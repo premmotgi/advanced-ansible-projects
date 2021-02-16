@@ -1,3 +1,6 @@
 #folder name should be host_vars
 ansible_host: 127.0.0.1
 ansible_ssh_pass: prem
+db_uname: db_user
+db_pass: Passw0rd
+db_name: employee_db
