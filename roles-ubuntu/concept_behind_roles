@@ -6,3 +6,84 @@ In the same way, you create an ansible template/role and push it to ansible-gala
 
 Next time, when someone else want to install/configure something, they can look for that in ansible-galaxy and update it as per need.
 or upload your own version on ansible-galaxy.
+
+Example if the systems are distributed throughout the server:
+
+-
+  name: Deploy a mysql DB
+  hosts: db_server
+  roles:
+    - python
+    - mysql_db
+
+-
+  name: Deploy a web server
+  hosts: web_server
+  roles:
+    - python
+    - flask_web
+
+
+----------------------------------------------------------------------
+CONSOLE OUTPUT OF FILE WITH ROLE MODELS OF MYSQL_DB, PYTHON, FLASK_APP
+-----------------------------------------------------------------------
+
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ansible-galaxy init mysql_db
+- Role mysql_db was created successfully
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ls
+concept_behind_roles  mysql_db
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ansible-galaxy init flask_web
+- Role flask_web was created successfully
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ansible-galaxy init python
+- Role python was created successfully
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ansible-playbook playbook.yml -i inventory.txt -K
+BECOME password:
+
+PLAY [Deploy a web application] *************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************
+[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host db_and_web_server1 should use /usr/bin/python3, but is using /usr/bin/python for backward compatibility with prior Ansible releases. A future
+Ansible release will default to using the discovered platform python for this host. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information. This
+feature will be removed in version 2.12. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+ok: [db_and_web_server1]
+
+TASK [python : Install all required dependencies] *******************************************************************************************************************************************************
+ok: [db_and_web_server1]
+
+TASK [mysql_db : Install MySQL database] ****************************************************************************************************************************************************************
+[DEPRECATION WARNING]: Invoking "apt" only once while using a loop via squash_actions is deprecated. Instead of using a loop to supply multiple items and specifying `name: "{{item}}"`, please use
+`name: ['mysql-server', 'mysql-client']` and remove the loop. This feature will be removed in version 2.11. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+ok: [db_and_web_server1] => (item=[u'mysql-server', u'mysql-client'])
+
+TASK [mysql_db : Start DB Sevice] ***********************************************************************************************************************************************************************
+[WARNING]: Consider using the service module rather than running 'service'.  If you need to use command because service is insufficient you can add 'warn: false' to this command task or set
+'command_warnings=False' in ansible.cfg to get rid of this message.
+changed: [db_and_web_server1]
+
+TASK [mysql_db : Create Application Database] ***********************************************************************************************************************************************************
+ok: [db_and_web_server1]
+
+TASK [mysql_db : Create Database User] ******************************************************************************************************************************************************************
+[WARNING]: Module did not set no_log for update_password
+ok: [db_and_web_server1]
+
+TASK [flask_web : Update pip] ***************************************************************************************************************************************************************************
+changed: [db_and_web_server1]
+
+TASK [flask_web : Install Python flask dependency] ******************************************************************************************************************************************************
+[DEPRECATION WARNING]: Invoking "pip" only once while using a loop via squash_actions is deprecated. Instead of using a loop to supply multiple items and specifying `name: "{{item}}"`, please use
+`name: ['flask', 'flask-mysql']` and remove the loop. This feature will be removed in version 2.11. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+ok: [db_and_web_server1] => (item=[u'flask', u'flask-mysql'])
+
+TASK [flask_web : Copy source code] *********************************************************************************************************************************************************************
+ok: [db_and_web_server1]
+
+TASK [flask_web : Start Web Server] *********************************************************************************************************************************************************************
+changed: [db_and_web_server1]
+
+PLAY RECAP **********************************************************************************************************************************************************************************************
+db_and_web_server1         : ok=10   changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ^C
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$ ^C
+prem@ubuntu:~/Documents/code/advanced-ansible-projects/roles-ubuntu$

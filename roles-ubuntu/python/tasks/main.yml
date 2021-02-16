@@ -1,0 +1,4 @@
+- name: Install all required dependencies
+  apt: #name={{item}} state=installed
+    name: [ 'python', 'python-setuptools', 'python-dev', 'build-essential', 'python-pip', 'python-apt', 'python-mysqldb', 'python3-pip', 'python3-setuptools']
+    state: present
