@@ -10,4 +10,10 @@ and then moves to the next task.
 9. Usually you can save status of tasks in a variable and set polling to 0 for all the tasks. Then, you can keep checking status
 every while to see if script execution is finished. in short, setting polling value to zero means ansible wont do polling for it and instead will
 move to next task.
+10. Execute this playbook with at least one -v so that you would be able to see the JOB ID which you can use to test the status with async_status
+
+------------------------------------------------
+The Poll keyword is auto-enabled whenever you use async and it has a default value as 10 seconds.
+
+ In realtime scenarios, you would not know how long the script would run, so use your best judgement when you are setting the value of async
 
