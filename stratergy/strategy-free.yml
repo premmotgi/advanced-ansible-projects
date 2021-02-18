@@ -1,6 +1,6 @@
 #With the linear strategy all hosts will run each task before any host starts the next task.
 #We would like eac host to run until the end of the play as fast as it can.
-
+#only for debian execution, wouldnot work on ubuntu
 -
   name: Deploy a web application
   hosts: app_servers

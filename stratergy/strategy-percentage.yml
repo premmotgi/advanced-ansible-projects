@@ -1,5 +1,6 @@
 #Let's take it one step further. The serial directive has some advanced use cases.
 #For example you could specify a percentage to say execute the playbook against 20% of servers at a time.
+#only for debian execution, wouldnot work on ubuntu
 
 -
   name: Deploy a web application

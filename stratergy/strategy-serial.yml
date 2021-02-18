@@ -1,3 +1,5 @@
+#only for debian execution, wouldnot work on ubuntu
+
 -
   name: Deploy a web application
   hosts: app_servers
