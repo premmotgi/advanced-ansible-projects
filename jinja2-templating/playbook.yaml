@@ -1,0 +1,106 @@
+#Playbook showing examples of using jina templating. Works well with Ubuntu, for centOS some changes might be needed.
+
+---
+#Making name dynamic
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    first_name: james
+    last_name: bond
+
+  tasks:
+    - name: test vars
+      debug:
+        msg: The name is {{last_name}}! {{first_name}} {{last_name}}!
+
+
+#Making name in title case
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    first_name: james
+    last_name: bond
+  tasks:
+    - name: test vars
+      debug:
+        msg: The name is {{last_name | title }}! {{first_name | title}} {{last_name | title}}!
+
+#Find lowest in an array
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    array_of_numbers:
+      - 12
+      - 34
+      - 06
+      - 34
+  tasks:
+    - name: test varss
+      debug:
+        msg: 'Lowest = {{ array_of_numbers | min }}'
+
+#install unique dependecies after combining two lists of dependencies
+# Try running without unique keyword.
+-
+  name: Install Dependencies
+  hosts: localhost
+  vars:
+    web_dependencies:
+      - python
+      - python-setuptools
+      - python-dev
+      - build-essential
+      - python-pip
+      - python-mysqldb
+    sql_dependencies:
+      - python
+      - python-mysqldb
+  tasks:
+    - name: Install dependencies
+      debug:
+        msg: name='{{ item }}'
+      with_items: '{{ sql_dependencies | union(web_dependencies) | unique }}'
+
+#generate random file name ending with any number from 0 to 1000
+-
+  name: Generate random file name
+  hosts: localhost
+  tasks:
+    - name: Install dependencies
+      file:
+        path: /tmp/random_file_{{ 1000 | random}}
+        state: touch
+
+#Check if IP addr is valid, return/print false if its not
+#reference: https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#managing-list-variables
+
+-
+  name: Test valid IP Address
+  hosts: localhost
+  vars:
+    ip_address: 192.168.1.6
+  tasks:
+    - name: install dependencies
+      pip:
+        name: ['ipaddr', 'netaddr']
+        state: present
+
+    - name: Test IP Address
+      debug:
+        msg: 'IP Address = {{ ip_address | ipaddr}}' #or could be {{ myvar | ansible.netcommon.ipaddr }}
+
+#retreieve the file name from file path
+
+-
+  name: Get filename
+  hosts: localhost
+  vars:
+    file_path: /etc/hosts
+  tasks:
+    - name: Get filename
+      debug:
+        msg: File Name = {{file_path | basename }}
+

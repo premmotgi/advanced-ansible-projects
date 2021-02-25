@@ -1,0 +1,44 @@
+{ADDITIONAL FILERS: JINJA 2 Documentation | Ansible Documentation}
+
+1. To make dynamic content available we need to use templating.
+
+2. Basically to make our playbook a little more dynamic for multiple variations we need to use templating.
+
+3. Its a generic template engine built and used for python
+
+4. String manipulation {{ }}
+
+5. | -> pipe operation / filters, all these filters can be applied to generated templates.
+
+for example,
+
+The name is {{ var_name | upper}}
+The name is {{ var_name | lower}}
+The name is {{ var_name | title}}
+
+5.1 To replace something
+The name is {{ var_name | replace("a","b")}}
+
+5.2 If we need to use default value:
+The name is {{ var_name | default("prem") }}
+
+5.3 Filers for list/set:
+{{ [1,2,3,4] | min }} o/p: 1
+{{ [1,2,3,4] | max }} o/p: 2
+{{ [1,2,3,4,2,4] | unique }} o/p: 1,2,3,4
+{{ [1,2,3,4] | union([1,2,3]) }}
+{{ [1,2,3,4] | intersect([1,2,3]) }}
+
+5.4 Generate Random number
+{{100 | random }} generates any number from 0 to 100
+{{["a", "b","c", "d"] | join(" ")}} : a b c d (join takes argument as in a separator for the request)
+
+
+5.5 Files based filters:
+{{"/etc/hosts" | basename}}
+{{"/etc/hosts" | win_basename}}
+{{"c:/etc/hosts" | win_splitdrive}} => ["c:","/etc/hosts"]
+{{"c:/etc/hosts" | win_splitdrive | first}} => "c:"
+
+
+
