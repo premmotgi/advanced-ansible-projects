@@ -1,0 +1,49 @@
+valut in ansible:
+
+Storing the passwords in text is not at all secured.
+
+1) Store the password in txt files
+2) ansible-vault encrypt <file-name> : encrypts the contents of file-name
+3) But once you encrypt it, while executing you will have to decrypt it.
+
+ansible-playbook playbook -i <inventory file> -ask-ansible-vault  // ask-ansible-vault asks user the password and decrypts the encrypted content.
+
+
+4) to run ansible-playbook along with password text file
+
+ansible-playbook playbook.yml -i inventory.txt -vault-password-file ~./pass.txt
+
+5) to run a python file which gets password and then use the password to run the playbook
+
+ansible-playbook playbook.yml -i inventory.txt -vault-password-file ~./pass.py
+
+note: its upto developer that how pass.py is implemented to get the password. Here we have just implemented this for example.
+
+6) To view the contents of encrypted file
+ansible-vault view inventory.txt
+
+
+7) To create the file which is encrypted
+
+ansible-vault create inventory.txt
+
+
+
+Dyanmic inventory:
+
+1) Basically when we have invenory file details, these details might change frequently.
+
+2) When such things happen some level of dymism is needed
+
+3) To do this, we will have to write a python file
+
+4) when we execute the playbook with ansible-playbook command, just replace .py file instead of .txt file
+
+5) what will be inside the python file?
+- dont forget to start file wiht #! line for indicating that its a python script or else execution engine
+  will execute it as a bash script
+- basically you will have to write a function that returns a json document with all the details that ansible needs
+- this specification can be found in ansible-documentation
+- you can also call some apis to get json doc and then return this json doc. this makes the application much secured.
+
+
