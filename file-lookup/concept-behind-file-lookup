@@ -1,0 +1,22 @@
+1) To store any details in key value pair, file lookups can be used.
+2) This could be done for any type of file that uses key value pairs
+
+
+csv file contents:
+
+Hostname,Password
+target1,Password234
+
+{{ lookup('csvfile', 'target1 file=/tml/creds.csv delimiter=,')}} => Password234
+
+first argument is type of file
+second argument is what you want to lookup for (when you want to know what value does a key holds, and provide key as input)
+third argument is file name
+fourth argument is delimeter to lookup (for ex, in csv delimeters are "," or commas)
+
+
+You can just use the ansible_ssh_pass parameter to pass password:
+
+- name: some task
+  shell: "echo 'hello world'"
+  ansible_ssh_pass: raspberry

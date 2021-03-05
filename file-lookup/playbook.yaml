@@ -1,0 +1,26 @@
+---
+#NOTE: While testing this playbook make sure that inventory file doesnot have ssh_pass in it since it will be fetched from-
+# csv or ini file, and these files should contain password.
+#Fetch password from csvfile within same folder
+-
+  name: Test Connectivity
+  hosts: web_server
+  vars:
+    ansible_ssh_pass: "{{lookup('csvfile','web_server file=credentials.csv delimiter=,')}}"
+
+  tasks:
+    - name: Ping target host
+      ping:
+        data: "Test"
+
+#Fetch the passwprd from ini file
+#reference: https://docs.ansible.com/ansible/2.4/playbooks_lookups.html
+-
+  name: Test Connectivity
+  hosts: web_server
+  vars:
+    ansible_ssh_pass: "{{ lookup('ini','password section=web_server file=credentials.ini')}}"
+  tasks:
+    - name: Ping target host
+      ping:
+        data: "Test"

@@ -98,7 +98,7 @@
   name: Get filename
   hosts: localhost
   vars:
-    file_path: /etc/hosts
+    file_path: /etc/hosts #here we are assuming that file is named as hosts
   tasks:
     - name: Get filename
       debug:
